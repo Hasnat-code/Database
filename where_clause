@@ -1,0 +1,159 @@
+-- =========================================
+-- BOOKSTORE DATABASE PRACTICE
+-- Author: Muhammad Hasnat Imtiaz
+-- =========================================
+
+
+-- =========================
+-- 🔹 DATABASE & TABLE
+-- =========================
+
+CREATE DATABASE bookstore;
+
+USE bookstore;
+
+CREATE TABLE books (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(100),
+    author VARCHAR(50),
+    price DECIMAL(10,2),
+    publication_date DATE,
+    category VARCHAR(30),
+    in_stock INT
+);
+
+
+-- =========================
+-- 🔹 INSERT DATA
+-- =========================
+
+INSERT INTO books VALUES
+(1, 'The MySQL Guide', 'John Smith', 29.99, '2023-01-15', 'Technology', 50),
+(2, 'Data Science Basics', 'Sarah Johnson', 34.99, '2023-03-20', 'Technology', 30),
+(3, 'Mystery at Midnight', 'Michael Brown', 19.99, '2023-02-10', 'Mystery', 100),
+(4, 'Cooking Essentials', 'Lisa Anderson', 24.99, '2023-04-05', 'Cooking', 75),
+(5, 'Cook Book', NULL, 24.99, '2023-04-05', 'Cooking', 75),
+(6, 'Mini Cook Book', 'Gohn Smith', 24.99, '2023-04-05', 'Cooking', 75);
+
+
+-- =========================
+-- 🔹 BASIC SELECT
+-- =========================
+
+SELECT * FROM books;
+
+SELECT * FROM books WHERE category = 'Technology';
+
+SELECT title, price FROM books WHERE price < 30.00;
+
+SELECT title, publication_date 
+FROM books 
+WHERE publication_date >= '2023-03-01';
+
+
+-- =========================
+-- 🔹 LOGICAL OPERATORS
+-- =========================
+
+SELECT * FROM books 
+WHERE category = 'Technology' AND price < 30;
+
+SELECT * FROM books 
+WHERE category = 'Technology' OR price < 30;
+
+SELECT * FROM books 
+WHERE (category = 'Technology' OR category = 'Mystery') 
+AND price < 25;
+
+SELECT * FROM books 
+WHERE NOT category = 'Technology';
+
+
+-- =========================
+-- 🔹 NULL VALUES
+-- =========================
+
+SELECT * FROM books WHERE author IS NULL;
+
+SELECT * FROM books WHERE author IS NOT NULL;
+
+
+-- =========================
+-- 🔹 PATTERN MATCHING
+-- =========================
+
+SELECT * FROM books WHERE title LIKE '%SQL%';
+
+SELECT * FROM books WHERE title LIKE 'The%';
+
+SELECT * FROM books WHERE title LIKE '%SQL%';  -- case-insensitive (depends on DB)
+
+SELECT * FROM books WHERE author LIKE '_ohn%';
+
+
+-- =========================
+-- 🔹 RANGE OPERATORS
+-- =========================
+
+SELECT * FROM books 
+WHERE price BETWEEN 20 AND 30;
+
+SELECT * FROM books 
+WHERE category IN ('Technology', 'Mystery', 'Science');
+
+SELECT * FROM books 
+WHERE price BETWEEN 20.00 AND 40.00
+AND publication_date >= '2023-01-01';
+
+
+-- =========================
+-- 🔹 SUBQUERIES
+-- =========================
+
+-- Books with price greater than average
+SELECT * FROM books 
+WHERE price > (SELECT AVG(price) FROM books);
+
+-- Categories with stock > 20
+SELECT * FROM books 
+WHERE category IN (
+    SELECT category FROM books WHERE in_stock > 20
+);
+
+
+-- =========================
+-- 🔹 ADVANCED QUERIES
+-- =========================
+
+-- Books in 2023 cheaper than average
+SELECT title, price, publication_date
+FROM books
+WHERE YEAR(publication_date) = 2023
+AND price < (SELECT AVG(price) FROM books);
+
+
+-- Technology books with "data" in title and stock > 50
+SELECT title, category, in_stock
+FROM books
+WHERE category = 'Technology'
+AND title LIKE '%data%'
+AND in_stock > 50;
+
+
+-- Complex condition (OR + AND)
+SELECT title, category, price
+FROM books
+WHERE (category = 'Technology' AND price > 30.00)
+OR (category = 'Mystery' AND price < 20.00);
+
+
+-- Author pattern + date condition
+SELECT title, author, publication_date
+FROM books
+WHERE (author LIKE '%son%' OR author LIKE '%th%')
+AND publication_date > '2023-03-31';
+
+
+-- =========================================
+-- END OF FILE
+-- =========================================
