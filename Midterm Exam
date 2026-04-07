@@ -1,0 +1,64 @@
+--Display all the products of last 10 years.
+select * from production.products 
+where model_year >= 2016;
+
+
+--List the staff having no supervisor/manager
+select * from sales.staffs where manager_id IS NULL;
+
+
+--Write a query that finds the products whose list price is less than 300, and the model is
+select * from production.products where list_price < 300 AND model_year = 2017;
+
+
+--Write a query that returns the top 5 most expensive products.
+select top 5 * from production.products 
+order by list_price DESC;
+
+--. Write a query that returns the total number of customers city wise.
+select city, count(customer_id) as total_customers 
+from sales.customers 
+group by city;
+
+
+--. Write a query that finds the customers whose last name starts with the letter ‘z’ and ends on ‘a’
+select * from sales.customers 
+where last_name LIKE 'z%a';
+
+
+--. Use a subquery to find the products whose list prices are greater than or equal to the average list price of any product brand.
+select * from production.products 
+where list_price >= (select avg(list_price) from production.products);
+
+
+--A query that finds the products that belong to the order id 100:
+select p.product_name, p.product_id 
+from production.products p
+INNER JOIN sales.order_items oi ON p.product_id = oi.product_id 
+where oi.order_id = 100;
+
+--. Staff name and ID who processed orders for customers in New York (NY).
+select DISTINCT s.staff_id, s.first_name, s.last_name 
+from sales.staffs s
+INNER JOIN sales.orders o ON s.staff_id = o.staff_id
+INNER JOIN sales.customers c ON o.customer_id = c.customer_id
+where c.state = 'NY';
+
+
+--. List the quantity of the product ‘Surly Straggler – 2018’ at each store in the state of ‘CA’
+select st.store_name, s.quantity 
+from sales.stores st INNER JOIN production.stocks s ON st.store_id = s.store_id
+INNER JOIN production.products p ON s.product_id = p.product_id
+where p.product_name = 'Surly Straggler - 2018' 
+AND st.state = 'CA';
+
+
+
+
+
+
+
+
+
+
+
